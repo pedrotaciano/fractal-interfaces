@@ -111,6 +111,10 @@
     opacity: 0.75;
   }
 
+  .hidden {
+    display: none;
+  }
+
   code {
     color: #9ad1ff;
   }
@@ -135,6 +139,12 @@
       <div id="levels-value">5</div>
     </div>
 
+    <div class="field hidden">
+      <label>Padding Multiplier</label>
+      <input id="scale" type="range" min="1" max="12" value="4" />
+      <div id="scale-value">4</div>
+    </div>
+
     <div class="metrics" id="metrics"></div>
   </aside>
 
@@ -145,9 +155,11 @@
 <script>
   const startInput = document.getElementById('start');
   const levelsInput = document.getElementById('levels');
+  const scaleInput = document.getElementById('scale');
 
   const startValue = document.getElementById('start-value');
   const levelsValue = document.getElementById('levels-value');
+  const scaleValue = document.getElementById('scale-value');
 
   const preview = document.getElementById('preview');
   const metrics = document.getElementById('metrics');
@@ -224,6 +236,7 @@
   function render() {
     const rawStart = parseInt(startInput.value);
     const levels = parseInt(levelsInput.value);
+    const scale = parseInt(scaleInput.value);
 
     const start = nearestFib(rawStart);
 
@@ -231,6 +244,7 @@
 
     startValue.textContent = start;
     levelsValue.textContent = levels;
+    scaleValue.textContent = scale;
 
     const rootCur = pairs[0][0];
     const rootPrev = pairs[0][1];
@@ -247,6 +261,11 @@
       </div>
     `;
 
+    document.documentElement.style.setProperty(
+      '--scale',
+      scale
+    );
+
     document.querySelectorAll('.card').forEach(el => {
       const cur =
         getComputedStyle(el)
@@ -261,7 +280,7 @@
         Math.max(1, radius - parseFloat(prev));
 
       el.style.padding =
-        `${padding}px`;
+        `${padding * scale}px`;
     });
 
     metrics.innerHTML = pairs.map((pair, i) => {
@@ -283,6 +302,7 @@
 
   startInput.addEventListener('input', render);
   levelsInput.addEventListener('input', render);
+  scaleInput.addEventListener('input', render);
 
   render();
 </script>
